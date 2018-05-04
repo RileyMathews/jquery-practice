@@ -1,8 +1,10 @@
 $(document).ready(function() {
 
     // Use jQuery to get a reference to `load-songs`
+    const btn = $("#load-songs")
 
     // Use jQuery to get a reference to `song-list`
+    const output = $("#song-list")
 
 
     /*
@@ -10,6 +12,28 @@ $(document).ready(function() {
         the button is clicked, use $.ajax() to load `songs.json`
         from the file system
     */
+    btn.on("click", () => {
+        const fragment = document.createDocumentFragment()
+        $.ajax("http://127.0.0.1:8080/songs.json")
+            .then(response => {
+                response.songs.forEach(song => {
+                    const songSection = document.createElement("section")
+                    songSection.classList = "song"
+
+                    const songTitle = document.createElement("h1")
+                    songTitle.classList = "song__title"
+                    songTitle.textContent = song.title
+                    songSection.append(songTitle)
+
+                    const songDescription = document.createElement("section")
+                    songDescription.classList = "song__description"
+                    songDescription.textContent = `Performed by ${song.artist} on the album ${song.album}`
+                    songSection.append(songDescription)
+                    fragment.append(songSection)
+                })
+                output.append(fragment)
+            })       
+    })
 
 
     /*
